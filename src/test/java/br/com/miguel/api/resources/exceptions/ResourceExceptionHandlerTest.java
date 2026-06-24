@@ -1,5 +1,6 @@
 package br.com.miguel.api.resources.exceptions;
 
+import br.com.miguel.api.services.exceptions.DataIntegrityViolationException;
 import br.com.miguel.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,19 @@ class ResourceExceptionHandlerTest {
     }
 
     @Test
-    void dataIntegratyViolationExcpetion() {
+    void dataIntegrityViolationException() {
+
+        ResponseEntity<StandardError> response = exceptionHandler
+                .dataIntegrityViolationException(
+                        new DataIntegrityViolationException("E-mail já cadastrado"),
+                        new MockHttpServletRequest());
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals("E-mail já cadastrado", response.getBody().getError());
+        assertEquals(400, response.getBody().getStatus());
     }
 }
