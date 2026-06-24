@@ -1,6 +1,6 @@
 package br.com.miguel.api.resources.exceptions;
 
-import br.com.miguel.api.services.exceptions.DataIntegratyViolationException;
+import br.com.miguel.api.services.exceptions.DataIntegrityViolationException;
 import br.com.miguel.api.services.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(DataIntegratyViolationException.class)
-    public ResponseEntity<StandardError>dataIntegratyViolationExcpetion(DataIntegratyViolationException ex, HttpServletRequest request) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError>dataIntegratyViolationExcpetion(DataIntegrityViolationException ex, HttpServletRequest request) {
         StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

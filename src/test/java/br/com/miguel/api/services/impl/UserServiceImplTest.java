@@ -3,13 +3,13 @@ package br.com.miguel.api.services.impl;
 import br.com.miguel.api.domain.User;
 import br.com.miguel.api.domain.dto.UserDTO;
 import br.com.miguel.api.repositories.UserRepository;
+import br.com.miguel.api.services.exceptions.DataIntegrityViolationException;
 import br.com.miguel.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -102,6 +101,19 @@ class UserServiceImplTest {
         assertEquals(NAME, response.getName());
         assertEquals(MAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenCreateThenReturnAnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try{
+            optionalUser.get().setId(2);
+            service.create(userDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals("E-mail já cadastrado no sistema", ex.getMessage());
+        }
     }
 
     @Test
